@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: funcionario-service
+  labels:
+    app: funcionario-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: funcionario-service
+  template:
+    metadata:
+      labels:
+        app: funcionario-service
+    spec:
+      containers:
+      - name: funcionario-service
+        image: bagelboi/funcionario-service:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: JAVA_OPTS
+          value: "-Xms512m -Xmx1024m"
+        - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+          value: http://eureka-server-service:8761/eureka
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: funcionario-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: funcionario-service
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: funcionario-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: funcionario-service
+  minReplicas: 1
+  maxReplicas: 3

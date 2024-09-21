@@ -29,3 +29,14 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/funcionario-service:latest
+
+    # - name: Set up Google Cloud
+      # uses: google-github-actions/setup-gcloud@v0.2.0
+      # with:
+        # service_account_key: ${{secrets.GKE_LOGIN}}
+    
+    # - name: Deploy to GKE
+      # run: | 
+        # gcloud container clusters get-credentials ls-cluster --zone us-central1-a
+        # kubectl apply -f ./deploy.yml
+      
